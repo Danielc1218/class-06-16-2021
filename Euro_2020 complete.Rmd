@@ -1,0 +1,33 @@
+---
+title: "Euro_birthdates"
+author: "Daniel Chen"
+date: "6/16/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(rvest)
+```
+
+```{r}
+x <- read_csv("birthdate.csv",  col_types = cols(value = col_character()))
+
+x %>% 
+  mutate(date = parse_date(str_sub(value, 2, 11))) %>% 
+  mutate(raw_month = months(date)) %>% 
+  mutate(month = parse_factor(raw_month, levels = month.name)) %>% 
+  group_by(month) %>% 
+  summarize(total = n()) %>% 
+  ggplot(mapping = aes(x = month, y = total, fill = total))+
+  geom_col()+
+  theme_classic()+
+  labs(title = "Number of EU Soccer Players Born in Each Month", subtitle = "There are more professional soccer players in the early part of the year", x = "Month", y = "Number of Players", caption = "Source: Wikipedia UEFA Euro 2020 squads")
+  
+
+
+
+```
+
+
